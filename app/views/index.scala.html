@@ -1,0 +1,71 @@
+@import modals.User
+
+@(users: List[User])(implicit flash: Flash)
+
+<html>
+    <head>
+      @*  <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'" />*@
+    </head>
+
+    <body>
+        <script src="@routes.Assets.versioned("javascripts/jquery.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/bootstrap.min.js")"></script>
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/dataTables.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/animate.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <script src="@routes.Assets.versioned("javascripts/dataTables.min.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+        <table id="userTable" class="display">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+            @users.map { user =>
+                <tr>
+                    <td>@user.id</td>
+                    <td>@user.name</td>
+                    <td>@user.balance</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+
+
+
+        <div class="row">
+            <form id="transferForm" method="post" action="@routes.HomeController.transfer()">
+                <div class="form-group col-md-3">
+                    <label for="form">From:</label>
+                    <input type="text" class="form-control" id="from" name="from">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="to">To:</label>
+                    <input type="text" class="form-control" id="to" name="to">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="to">Amount:</label>
+                    <input type="number" step="0.01" class="form-control" id="amount" name="amount">
+                </div>
+                <div class="form-group col-md-3">
+                    <br>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+
+        @flash.get("SUCCESS").fold {
+            <p class = "red"> @flash.get("ERROR")</p>
+
+        } { msg =>
+            <p class="green">@msg</p>
+        }
+
+    </body>
+</html>
