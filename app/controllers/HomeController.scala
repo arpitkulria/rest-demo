@@ -1,11 +1,10 @@
 package controllers
 
-import javax.inject.{Inject, _}
+import javax.inject.{Inject, Singleton}
 
 import modals.Transfer
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.db._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc._
 import services.UserService
@@ -13,7 +12,7 @@ import services.UserService
 import scala.concurrent.Future
 
 @Singleton
-class HomeController @Inject()(userService: UserService) extends InjectedController {
+class HomeController @Inject()(cc: ControllerComponents, userService: UserService) extends AbstractController(cc) {
 
   def index() = Action { implicit request: Request[AnyContent] =>
     val users = userService.getAllUser
@@ -35,8 +34,8 @@ class HomeController @Inject()(userService: UserService) extends InjectedControl
        Future.successful(Redirect(routes.HomeController.index()).flashing("ERROR" -> "There was some problem with from data"))
       },
       transfer => {
-        userService.transfer(transfer) map { op =>
-        Redirect(routes.HomeController.index()).flashing( (if(op == "Transfer Complete") "SUCCESS" else "ERROR") -> op)
+        userService.transfer(transfer).map { op =>
+        Redirect(routes.HomeController.index()).flashing((if(op == "Transfer Complete") "SUCCESS" else "ERROR") -> op)
         }
       })).recover {
       case ex: Throwable =>

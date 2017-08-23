@@ -1,9 +1,11 @@
 .red {
     color: red;
     font-weight: bold;
+    alignment: center;
 }
 
 .green {
     color: green;
     font-weight: bold;
+    alignment: center;
 }
